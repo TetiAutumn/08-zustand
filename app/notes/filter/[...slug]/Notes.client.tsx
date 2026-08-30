@@ -1,10 +1,9 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import NoteList from "@/components/NoteList/NoteList";
 import { fetchNotes } from "@/lib/api";
-import { NoteForm } from "@/components/NoteForm/NoteForm";
-import { Modal } from "@/components/Modal/Modal";
 import SearchBox from "@/components/SearchBox/SearchBox";
 import Pagination from "@/components/Pagination/Pagination";
 import { useDebouncedCallback } from "use-debounce";
@@ -14,7 +13,6 @@ import { NoteTag } from "@/types/note";
 
 export default function Notes({ tag }: { tag: NoteTag | ''}) {
     const [search, setSearch] = useState("");
-    const [showModal, setShowModal] = useState(false);
     const [page, setPage] = useState<number>(1);
 
     const { data } = useQuery({
@@ -48,16 +46,13 @@ export default function Notes({ tag }: { tag: NoteTag | ''}) {
                         onPageChange={handlePage}
                     />
                 )}
-                <button className={css.button} onClick={() => setShowModal(true)}>Create note +</button>
+                <Link href="/notes/action/create" className={css.button}>
+                    Create note +
+                </Link>
             </div>
             {data && data.notes.length > 0 &&
                 <NoteList notes={data?.notes || []} />
             }
-            {showModal && (
-                <Modal onClose={() => setShowModal(false)}>
-                    <NoteForm onClose={() => setShowModal(false)} />
-                </Modal>
-            )}
         </>
     );
 }
